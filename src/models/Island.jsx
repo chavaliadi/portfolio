@@ -22,6 +22,7 @@ export function Island({
   setIsRotating,
   setCurrentStage,
   currentFocusPoint,
+  prefersReducedMotion = false,
   ...props
 }) {
   const islandRef = useRef();
@@ -158,6 +159,13 @@ export function Island({
   }
 
   useEffect(() => {
+    if (prefersReducedMotion) {
+      rotationSpeed.current = 0;
+      rotationSpeedY.current = 0;
+    }
+  }, [prefersReducedMotion]);
+
+  useEffect(() => {
     // Add event listeners for pointer and keyboard events
     const canvas = gl.domElement;
     canvas.addEventListener("pointerdown", handlePointerDown);
@@ -186,6 +194,10 @@ export function Island({
   useFrame(() => {
     // If not rotating, apply damping to slow down the rotation (smoothly)
     if (!isRotating) {
+      if (prefersReducedMotion) {
+        return;
+      }
+
       // Apply damping factor to horizontal Y rotation
       rotationSpeed.current *= dampingFactor;
       if (Math.abs(rotationSpeed.current) < 0.001) {

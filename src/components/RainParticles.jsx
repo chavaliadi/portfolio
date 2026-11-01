@@ -2,7 +2,7 @@ import { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 
-const RainParticles = ({ currentStage }) => {
+const RainParticles = ({ currentStage, prefersReducedMotion = false }) => {
   const pointsRef = useRef();
   const count = 800; // Optimal particle count for performance
   
@@ -24,6 +24,13 @@ const RainParticles = ({ currentStage }) => {
   }, []);
 
   useFrame((state, delta) => {
+    if (prefersReducedMotion) {
+      if (pointsRef.current) {
+        pointsRef.current.material.opacity = 0;
+      }
+      return;
+    }
+
     const clampedDelta = Math.min(delta, 0.1);
     
     // Determine target opacity based on current stage

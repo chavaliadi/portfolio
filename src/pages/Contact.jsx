@@ -141,7 +141,7 @@ const Contact = () => {
           </button>
         </form>
 
-        {/* Contact Info Cards */}
+        {/* Contact Info Card */}
         <div className="mt-12 flex flex-col sm:flex-row gap-4 mb-10">
           <a
             href="mailto:adithya3218@gmail.com"
@@ -156,21 +156,6 @@ const Contact = () => {
               <span className="font-semibold text-slate-800 text-sm">Email Me</span>
             </div>
             <p className="text-xs text-slate-500 break-all font-poppins">adithya3218@gmail.com</p>
-          </a>
-
-          <a
-            href="tel:+918143873683"
-            className="flex-1 glassmorphism p-5 flex flex-col gap-2 hover:shadow-lg hover:-translate-y-1 transition-all duration-300 group"
-          >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 font-bold group-hover:bg-orange-600 group-hover:text-white transition-all duration-300">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-4 h-4">
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 6.6221c0-1.2721.9059-2.3486 2.1643-2.4842l2.3168-.2504c.9535-.1031 1.8398.4116 2.1641 1.3093l.896 2.477c.28.7738-.0345 1.6373-.7286 2.0526l-1.047.6282c-.3133.188-.4159.5786-.2313.9166 1.107 2.0298 2.7663 3.689 4.796 4.796.338.1846.7286.082 1.9166-.2313l.6282-1.047c.4153-.6941 1.2788-1.0086 2.0526-.7286l2.477.896c.8977.3243 1.4124 1.2106 1.3093 2.1641l-.2504 2.3168c-.1356 1.2584-1.2121 2.1643-2.4842 2.1643-9.5292 0-17.25-7.7208-17.25-17.25z" />
-                </svg>
-              </div>
-              <span className="font-semibold text-slate-800 text-sm">Call / WhatsApp</span>
-            </div>
-            <p className="text-xs text-slate-500 font-poppins">+91-8143873683</p>
           </a>
         </div>
       </div>

@@ -14,7 +14,8 @@ export function Bird({
   altitude = 5,
   direction = 1,
   timeOffset = 0,
-  type = "phoenix"
+  type = "phoenix",
+  prefersReducedMotion = false
 }) {
   const birdRef = useRef();
 
@@ -70,6 +71,10 @@ export function Bird({
   }, [actions]);
 
   useFrame(({ clock }) => {
+    if (prefersReducedMotion) {
+      return;
+    }
+
     const elapsed = clock.elapsedTime * orbitSpeed + timeOffset;
 
     // Calculate position along circular orbit around the island center (0, -43.4)

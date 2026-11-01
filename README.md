@@ -40,7 +40,7 @@ A state-of-the-art 3D developer portfolio featuring an immersive, interactive fl
   * **Red Fire Dragon**: Scale increased for size (`0.026`), with a metallic crimson red body (`#991b1b`) and glowing red energy wing-tips/accents (`#ef4444`).
 
 ### 5. Glassmorphic Contact Cards
-* The Contact screen renders a responsive glassmorphic card interface featuring direct links to Email (`adithya3218@gmail.com`) and Call/WhatsApp (`+91-8143873683`).
+* The Contact screen renders a responsive glassmorphic card interface featuring a direct Email contact action (`adithya3218@gmail.com`).
 
 ---
 
@@ -66,6 +66,15 @@ Spin up the hot-reloading Vite dev server:
 npm run dev
 ```
 Open **http://localhost:5173/** in your browser.
+
+### Environment Variables
+Create a `.env` file in the project root and configure the EmailJS credentials:
+
+```bash
+VITE_APP_EMAILJS_SERVICE_ID=
+VITE_APP_EMAILJS_TEMPLATE_ID=
+VITE_APP_EMAILJS_PUBLIC_KEY=
+```
 
 ### Build (Production)
 Compile and bundle the project for production:

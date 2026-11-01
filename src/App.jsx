@@ -1,29 +1,54 @@
+import { Suspense, lazy } from "react";
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
 
 import { Footer, Navbar } from "./components";
-import { About, Contact, Home, Projects } from "./pages";
+
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Contact = lazy(() => import("./pages/Contact"));
+
+const routeFallback = (
+  <div className='max-container py-16 text-center text-slate-600'>Loading...</div>
+);
 
 const App = () => {
   return (
     <main className='bg-slate-300/20'>
       <Router>
         <Navbar />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route
-            path='/*'
-            element={
-              <>
-                <Routes>
-                  <Route path='/about' element={<About />} />
-                  <Route path='/projects' element={<Projects />} />
-                  <Route path='/contact' element={<Contact />} />
-                </Routes>
-                <Footer />
-              </>
-            }
-          />
-        </Routes>
+        <Suspense fallback={routeFallback}>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route
+              path='/about'
+              element={
+                <>
+                  <About />
+                  <Footer />
+                </>
+              }
+            />
+            <Route
+              path='/projects'
+              element={
+                <>
+                  <Projects />
+                  <Footer />
+                </>
+              }
+            />
+            <Route
+              path='/contact'
+              element={
+                <>
+                  <Contact />
+                  <Footer />
+                </>
+              }
+            />
+          </Routes>
+        </Suspense>
       </Router>
     </main>
   );
