@@ -4,7 +4,19 @@
     },
     "rewrites": [
         {
-            "source": "/(.*)",
+            "source": "/",
+            "destination": "/"
+        },
+        {
+            "source": "/about",
+            "destination": "/"
+        },
+        {
+            "source": "/projects",
+            "destination": "/"
+        },
+        {
+            "source": "/contact",
             "destination": "/"
         }
     ]

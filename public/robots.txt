@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://portfolio-pi-khaki-j5s4qcu57o.vercel.app/sitemap.xml

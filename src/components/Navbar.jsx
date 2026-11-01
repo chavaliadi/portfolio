@@ -13,6 +13,14 @@ const Navbar = () => {
         <NavLink to='/projects' className={({ isActive }) => isActive ? "text-blue-600" : "text-black"}>
           Projects
         </NavLink>
+        <a
+          href='/resume.pdf'
+          target='_blank'
+          rel='noopener noreferrer'
+          className='text-black hover:text-blue-600'
+        >
+          Resume
+        </a>
       </nav>
     </header>
   );

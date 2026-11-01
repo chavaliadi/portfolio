@@ -10,7 +10,7 @@ const HomeInfo = ({ currentStage }) => {
         <span className='font-semibold mx-2 text-white'>Adithya Chavali</span>
         👋
         <br />
-        A Software Engineer & B.Tech Student at IIIT Allahabad 🇮🇳
+        US citizen based in Atlanta, Georgia, finishing a B.Tech at IIIT Allahabad (graduating 2027).
       </h1>
     );
 

@@ -103,6 +103,18 @@ const Projects = () => {
                       alt='arrow'
                       className='w-4 h-4 object-contain'
                     />
+                    {project.liveUrl && (
+                      <>
+                        <a
+                          href={project.liveUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          className='ml-3 font-semibold text-blue-600 hover:underline text-sm'
+                        >
+                          Live demo →
+                        </a>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

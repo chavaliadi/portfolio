@@ -28,7 +28,7 @@ export function Island({
   const islandRef = useRef();
   // Get access to the Three.js renderer and viewport
   const { gl, viewport } = useThree();
-  const { nodes, materials } = useGLTF(islandScene);
+  const { nodes, materials } = useGLTF(islandScene, "/draco/gltf/");
 
   // Use a ref for the last mouse x and y positions
   const lastX = useRef(0);

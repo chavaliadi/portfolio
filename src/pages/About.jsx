@@ -117,7 +117,7 @@ const About = () => {
 
       <div className='mt-5 flex flex-col gap-3 text-slate-500'>
         <p>
-          Software Engineer based in Atlanta, Georgia 🇺🇸 and student at IIIT Allahabad 🇮🇳. 
+          US citizen based in Atlanta, Georgia, finishing a B.Tech at IIIT Allahabad (graduating 2027).
           I specialize in building robust full-stack applications, designing secure APIs, 
           and implementing machine learning pipelines. Genuinely curious about complex system 
           architectures and automation.
@@ -127,25 +127,30 @@ const About = () => {
       <div className='py-10 flex flex-col'>
         <h3 className='subhead-text'>My Skills</h3>
 
-        <div className='mt-16 flex flex-wrap gap-12 justify-center sm:justify-start'>
+        <div className='mt-16 flex flex-wrap gap-4 sm:gap-8 justify-center sm:justify-start'>
           {skills.map((skill) => (
-            <div className='block-container w-20 h-20' key={skill.name}>
-              <div className='btn-back rounded-xl' />
-              <div className='btn-front rounded-xl flex justify-center items-center p-3' title={skill.name}>
-                {skill.imageUrl ? (
-                  <img
-                    src={skill.imageUrl}
-                    alt={skill.name}
-                    className='w-10 h-10 object-contain'
-                  />
-                ) : (
-                  customIcons[skill.name] || (
-                    <div className='w-full h-full flex flex-col items-center justify-center bg-sky-50 rounded-lg text-blue-600 font-extrabold text-xs text-center leading-none p-1 break-words'>
-                      {skill.name}
-                    </div>
-                  )
-                )}
+            <div className='flex w-24 flex-col items-center gap-2' key={skill.name}>
+              <div className='block-container w-20 h-20'>
+                <div className='btn-back rounded-xl' />
+                <div className='btn-front rounded-xl flex justify-center items-center p-3' title={skill.name}>
+                  {skill.imageUrl ? (
+                    <img
+                      src={skill.imageUrl}
+                      alt={skill.name}
+                      className='w-10 h-10 object-contain'
+                    />
+                  ) : (
+                    customIcons[skill.name] || (
+                      <div className='w-full h-full flex flex-col items-center justify-center bg-sky-50 rounded-lg text-blue-600 font-extrabold text-xs text-center leading-none p-1 break-words'>
+                        {skill.name}
+                      </div>
+                    )
+                  )}
+                </div>
               </div>
+              <span className='w-full text-center text-xs font-medium leading-tight text-slate-600'>
+                {skill.name}
+              </span>
             </div>
           ))}
         </div>

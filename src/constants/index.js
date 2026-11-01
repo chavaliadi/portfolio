@@ -202,11 +202,13 @@ export const socialLinks = [
 ];
 
 export const projects = [
+    // TODO: add live URLs
     {
         theme: 'btn-back-red',
         name: 'GeoMind',
         description: 'Engineered a location-aware smart task reminder platform that triggers notifications based on real-time GPS proximity using Node.js, FastAPI, PostgreSQL, PostGIS, Supabase, and React Native. Integrates an NLP pipeline to auto-categorize tasks.',
         link: 'https://github.com/chavaliadi/geomind',
+        liveUrl: '',
         technologies: ['React Native', 'Node.js', 'FastAPI', 'PostgreSQL', 'PostGIS', 'Supabase', 'scikit-learn']
     },
     {
@@ -214,13 +216,15 @@ export const projects = [
         name: 'CodeVitals',
         description: 'Built a full-stack code quality analysis platform with AST-based parsing for JS/TS and pattern scanning for Python, Go, and C++. Includes a Correctness Gate syntax validator, scan history tracking with Convex, and Llama 3 refactoring suggestions.',
         link: 'https://github.com/chavaliadi/codevitals',
+        liveUrl: '',
         technologies: ['Next.js', 'TypeScript', 'Convex', 'Clerk', 'Groq API', 'Tailwind CSS']
     },
     {
         theme: 'btn-back-blue',
         name: 'ResumeIQ',
         description: 'Developed an AI-powered resume analyzer integrating Claude 3.5 Sonnet to score ATS compatibility and quality. Builds RPA workflows for skill-gap planning, runs a client-side PDF-to-Image converter, and uses Docker multi-stage builds.',
-        link: 'https://github.com/chavaliadi/resumeiq.git',
+        link: 'https://github.com/chavaliadi/resumeiq',
+        liveUrl: '',
         technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Zustand', 'Claude AI', 'Docker']
     },
     {
@@ -228,6 +232,7 @@ export const projects = [
         name: 'MovieHub',
         description: 'Engineered a content-based recommendation engine on 1.3M movies using TF-IDF vectorization and cosine similarity. Features a tiered loading system (100K movies in 30s quick-start, background upgrade) and thread-safe Singleton pattern.',
         link: 'https://github.com/chavaliadi/moviehub',
+        liveUrl: '',
         technologies: ['React.js', 'Python', 'Flask', 'scikit-learn', 'Docker']
     },
     {
@@ -235,6 +240,7 @@ export const projects = [
         name: 'Quickmark Attendance',
         description: 'Full-stack biometric attendance platform utilizing facial recognition and rotating time-bound QR codes to prevent proxies. Handled 1,000+ concurrent student sessions and normalized PostgreSQL schemas.',
         link: '#',
+        liveUrl: '',
         isProfessional: true,
         company: 'Ada Insys Pvt. Ltd.',
         role: 'Team Lead & Backend Developer',
@@ -245,6 +251,7 @@ export const projects = [
         name: 'Timetable Automation',
         description: 'Responsive academic scheduling dashboard with real-time conflict detection across courses and classrooms. Features REST API endpoints integrated with dynamic calendar grid views.',
         link: '#',
+        liveUrl: '',
         isProfessional: true,
         company: 'Ada Insys Pvt. Ltd.',
         role: 'Frontend Developer',
