@@ -98,10 +98,9 @@ const About = () => {
       <div className='max-w-[65ch]'>
         <h1 className='text-3xl sm:text-display font-poppins font-bold text-text-primary tracking-tight'>
           Hello, I'm{" "}
-          <span className='text-accent-primary'>
-            Adithya Chavali
-          </span>{" "}
-          👋
+          <span className='text-accent-primary whitespace-nowrap'>
+            Adithya Chavali 👋
+          </span>
         </h1>
 
         <p className='mt-6 text-body text-text-secondary leading-relaxed'>

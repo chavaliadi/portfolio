@@ -9,9 +9,10 @@ const getGradientFromName = (name) => {
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  const hue1 = Math.abs(hash) % 360;
-  const hue2 = (hue1 + 45) % 360;
-  return `linear-gradient(90deg, hsl(${hue1}, 75%, 65%), hsl(${hue2}, 80%, 60%))`;
+  // Constrain to the sky→violet accent band so the grid reads as one system
+  const hue1 = 190 + (Math.abs(hash) % 90);
+  const hue2 = hue1 + 25;
+  return `linear-gradient(90deg, hsl(${hue1}, 70%, 58%), hsl(${hue2}, 75%, 62%))`;
 };
 
 const Projects = () => {

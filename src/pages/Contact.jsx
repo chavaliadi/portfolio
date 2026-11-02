@@ -187,7 +187,7 @@ const Contact = () => {
             rel='noopener noreferrer'
             className='inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-surface-raised border border-surface-border hover:text-accent-primary hover:border-accent-primary/40 transition-all text-xs sm:text-sm'
           >
-            <img src={github} alt='' className='w-4 h-4 object-contain brightness-200 shrink-0' aria-hidden='true' />
+            <img src={github} alt='' className='w-4 h-4 object-contain invert opacity-80 shrink-0' aria-hidden='true' />
             <span>GitHub</span>
           </a>
 
