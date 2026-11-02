@@ -174,11 +174,12 @@ export const experiences = [
         company_name: "Velind Virtual Systems Pvt. Ltd.",
         iconType: "work",
         iconBg: "#dcfce7",
-        date: "June 2026 - Present",
+        date: "June 2026 - July 2026",
         points: [
-            "Starting a software developer internship to engineer virtualized software solutions and full-stack enterprise services.",
-            "Collaborating with system engineering teams to design reliable APIs and modernize responsive frontends.",
-            "Participating in agile sprints and code review pipelines to align with secure architectural standards."
+            "Integration lead on a five-person team building the Sagarmala 2.0 portal — a project-management system for the Ministry of Ports, Shipping and Waterways, managing the lifecycle of port-led infrastructure projects across India.",
+            "Owned the cross-cutting layers while four developers each built a feature module: permission-based RBAC across 12 roles and 23 permissions, the Alembic migration chain, API router registration, and the executive dashboard.",
+            "Reviewed and merged all four feature modules into develop; deliberately owned zero feature modules so that architecture, reviews and migrations had a single owner.",
+            "Diagnosed and resolved a migration-chain fork where two feature branches independently generated Alembic revisions against the same parent, collapsing it back to a single head without losing either developer's schema changes.",
         ]
     }
 ];
@@ -202,59 +203,107 @@ export const socialLinks = [
 ];
 
 export const projects = [
-    // TODO: add live URLs
-    {
-        theme: 'btn-back-red',
-        name: 'GeoMind',
-        description: 'Engineered a location-aware smart task reminder platform that triggers notifications based on real-time GPS proximity using Node.js, FastAPI, PostgreSQL, PostGIS, Supabase, and React Native. Integrates an NLP pipeline to auto-categorize tasks.',
-        link: 'https://github.com/chavaliadi/geomind',
-        liveUrl: '',
-        technologies: ['React Native', 'Node.js', 'FastAPI', 'PostgreSQL', 'PostGIS', 'Supabase', 'scikit-learn']
-    },
-    {
-        theme: 'btn-back-green',
-        name: 'CodeVitals',
-        description: 'Built a full-stack code quality analysis platform with AST-based parsing for JS/TS and pattern scanning for Python, Go, and C++. Includes a Correctness Gate syntax validator, scan history tracking with Convex, and Llama 3 refactoring suggestions.',
-        link: 'https://github.com/chavaliadi/codevitals',
-        liveUrl: '',
-        technologies: ['Next.js', 'TypeScript', 'Convex', 'Clerk', 'Groq API', 'Tailwind CSS']
-    },
-    {
-        theme: 'btn-back-blue',
-        name: 'ResumeIQ',
-        description: 'Developed an AI-powered resume analyzer integrating Claude 3.5 Sonnet to score ATS compatibility and quality. Builds RPA workflows for skill-gap planning, runs a client-side PDF-to-Image converter, and uses Docker multi-stage builds.',
-        link: 'https://github.com/chavaliadi/resumeiq',
-        liveUrl: '',
-        technologies: ['React', 'TypeScript', 'Tailwind CSS', 'Zustand', 'Claude AI', 'Docker']
-    },
-    {
-        theme: 'btn-back-yellow',
-        name: 'MovieHub',
-        description: 'Engineered a content-based recommendation engine on 1.3M movies using TF-IDF vectorization and cosine similarity. Features a tiered loading system (100K movies in 30s quick-start, background upgrade) and thread-safe Singleton pattern.',
-        link: 'https://github.com/chavaliadi/moviehub',
-        liveUrl: '',
-        technologies: ['React.js', 'Python', 'Flask', 'scikit-learn', 'Docker']
-    },
-    {
-        theme: 'btn-back-orange',
-        name: 'Quickmark Attendance',
-        description: 'Full-stack biometric attendance platform utilizing facial recognition and rotating time-bound QR codes to prevent proxies. Handled 1,000+ concurrent student sessions and normalized PostgreSQL schemas.',
-        link: '#',
-        liveUrl: '',
-        isProfessional: true,
-        company: 'Ada Insys Pvt. Ltd.',
-        role: 'Team Lead & Backend Developer',
-        technologies: ['Node.js', 'PostgreSQL', 'Redis', 'REST APIs', 'Postman']
-    },
-    {
-        theme: 'btn-back-pink',
-        name: 'Timetable Automation',
-        description: 'Responsive academic scheduling dashboard with real-time conflict detection across courses and classrooms. Features REST API endpoints integrated with dynamic calendar grid views.',
-        link: '#',
-        liveUrl: '',
-        isProfessional: true,
-        company: 'Ada Insys Pvt. Ltd.',
-        role: 'Frontend Developer',
-        technologies: ['React.js', 'REST APIs', 'PostgreSQL', 'CSS']
-    }
+  {
+    name: 'Aurelin',
+    category: 'Dev Tools',
+    description: 'Static code analysis and architecture platform that maps a codebase\'s structure and generates architecture summaries. The LLM is a product feature, not tooling — it explains scan output in plain language rather than just flagging patterns.',
+    technologies: ['TypeScript', 'Convex', 'React', 'LLM'],
+    link: 'https://github.com/chavaliadi/aurelin',
+    liveUrl: 'https://aurelin-chi.vercel.app',
+  },
+  {
+    name: 'GeoMind',
+    category: 'ML / Data',
+    description: 'Geospatial task orchestration — turns free-text to-dos into location-aware errands, infers category and urgency, finds nearby stores, and computes an optimised driving route. The classifier is trained, not prompted: TF-IDF + logistic regression at 90.2% accuracy and 90.6% macro F1 on a stratified 80/20 split.',
+    technologies: ['Express', 'PostGIS', 'FastAPI', 'scikit-learn', 'React', 'Expo', 'OSRM'],
+    link: 'https://github.com/chavaliadi/geomind',
+    liveUrl: '',
+  },
+  {
+    name: 'KnowledgeHub',
+    category: 'ML / Data',
+    description: 'AI knowledge base and bookmark manager with hybrid retrieval — vector and keyword results merged by Reciprocal Rank Fusion, reranked by a local ONNX cross-encoder, with streaming RAG chat and citations. Row-Level Security enforced on every table; Gemini 2.5 Flash with automatic Groq failover.',
+    technologies: ['Bun', 'Express', 'TypeScript', 'Supabase', 'pgvector', 'React', 'Gemini'],
+    link: 'https://github.com/chavaliadi/knowledge-hub',
+    liveUrl: '',
+  },
+  {
+    name: 'Watchdog',
+    category: 'Infrastructure',
+    description: 'Self-hosted endpoint monitoring in Go — HTTP and TCP checks on per-monitor schedulers feeding a bounded worker pool, with jittered exponential backoff, Prometheus metrics, and webhook alerts that fire only on transition into UNHEALTHY. Benchmarked to 500 monitors at ~7.3 MB heap.',
+    technologies: ['Go', 'PostgreSQL', 'Prometheus', 'React', 'TypeScript', 'Docker'],
+    link: 'https://github.com/chavaliadi/watchdog',
+    liveUrl: '',
+  },
+  {
+    name: 'Conquer',
+    category: 'Full-stack',
+    description: 'AI technical interview simulator with an adaptive scoring engine that reprocesses candidate input live. Deployed and in use.',
+    technologies: ['Next.js', 'TypeScript', 'React', 'PostgreSQL', 'LLM'],
+    link: 'https://github.com/chavaliadi/conquer',
+    liveUrl: 'https://conquer-drab.vercel.app',
+  },
+  {
+    name: 'VectorVault',
+    category: 'ML / Data',
+    description: 'HNSW approximate nearest-neighbour search implemented from scratch and visualised step by step over real GloVe embeddings. Benchmarked at 1.93 ms vs 26.5 ms brute force with Recall@10 of 0.946, cross-validated against hnswlib as a reference implementation.',
+    technologies: ['Python', 'NumPy', 'FastAPI', 'React', 'D3.js'],
+    link: 'https://github.com/chavaliadi/vectorvault',
+    liveUrl: '',
+  },
+  {
+    name: 'DevLog',
+    category: 'Dev Tools',
+    description: 'Developer activity intelligence — turns commit history and diffs into daily journals, architectural milestones, and resume-ready bullets. Background processing on BullMQ, AES-256-GCM encryption for stored GitHub tokens, duplicate-commit protection enforced as a schema constraint rather than application string-matching.',
+    technologies: ['Node.js', 'Express', 'TypeScript', 'PostgreSQL', 'Prisma', 'Redis', 'React'],
+    link: 'https://github.com/chavaliadi/devlog',
+    liveUrl: '',
+  },
+  {
+    name: 'Conceptra',
+    category: 'Full-stack',
+    description: 'Adaptive learning system that compiles unstructured syllabi into prerequisite DAGs with cycle detection, then schedules study by topological sort against weekly availability. Spaced repetition runs SuperMemo-2 with an Ebbinghaus retention-decay model; quizzes are confidence-weighted so confidently-wrong answers are penalised hardest. The LLM handles text only — scheduling and mastery tracking are deterministic.',
+    technologies: ['Python', 'FastAPI', 'SQLAlchemy', 'PostgreSQL', 'Redis', 'React', 'TypeScript'],
+    link: 'https://github.com/chavaliadi/conceptra',
+    liveUrl: '',
+  },
+  {
+    name: 'Benizakura',
+    category: 'Research',
+    description: 'Research-stage evaluation framework for LLM-powered applications — catches changes that improve one behaviour while silently degrading another. Bidirectional pairwise judging with order-flip detection, paired bootstrap confidence intervals, and a human calibration protocol requiring Cohen\'s κ ≥ 0.60 before any automated judge is trusted. 198 deterministic tests; benchmark frozen, live experiments pending.',
+    technologies: ['Python', 'pytest', 'Claude', 'GPT-4o', 'Statistics'],
+    link: 'https://github.com/chavaliadi/benizakura',
+    liveUrl: '',
+  },
+  {
+    name: 'ResumeIQ',
+    category: 'Full-stack',
+    description: 'AI resume analyser scoring ATS compatibility, content, structure, tone and skills against a target job posting, with skill-gap detection and a generated interview-prep set. Client-side PDF rendering, no custom backend.',
+    technologies: ['React 19', 'TypeScript', 'Tailwind', 'Zustand', 'Claude', 'Docker'],
+    link: 'https://github.com/chavaliadi/resumeiq',
+    liveUrl: '',
+  },
+];
+
+export const professionalProjects = [
+  {
+    name: 'Quickmark Attendance',
+    description: 'Full-stack biometric attendance platform utilizing facial recognition and rotating time-bound QR codes to prevent proxies. Handled 1,000+ concurrent student sessions and normalized PostgreSQL schemas.',
+    link: '#',
+    liveUrl: '',
+    isProfessional: true,
+    company: 'Ada Insys Pvt. Ltd.',
+    role: 'Team Lead & Backend Developer',
+    technologies: ['Node.js', 'PostgreSQL', 'Redis', 'REST APIs', 'Postman']
+  },
+  {
+    name: 'Timetable Automation',
+    description: 'Responsive academic scheduling dashboard with real-time conflict detection across courses and classrooms. Features REST API endpoints integrated with dynamic calendar grid views.',
+    link: '#',
+    liveUrl: '',
+    isProfessional: true,
+    company: 'Ada Insys Pvt. Ltd.',
+    role: 'Frontend Developer',
+    technologies: ['React.js', 'REST APIs', 'PostgreSQL', 'CSS']
+  }
 ];

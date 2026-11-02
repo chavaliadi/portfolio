@@ -1,23 +1,11 @@
 {
-    "github": {
-        "silent": true
-    },
-    "rewrites": [
-        {
-            "source": "/",
-            "destination": "/"
-        },
-        {
-            "source": "/about",
-            "destination": "/"
-        },
-        {
-            "source": "/projects",
-            "destination": "/"
-        },
-        {
-            "source": "/contact",
-            "destination": "/"
-        }
-    ]
+  "github": {
+    "silent": true
+  },
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/"
+    }
+  ]
 }

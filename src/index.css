@@ -14,12 +14,54 @@
 @tailwind utilities;
 
 :root {
+  --surface-base: #0b1020;
+  --surface-raised: #131a2e;
+  --surface-border: rgba(148, 163, 184, 0.12);
+  --text-primary: #e8edf7;
+  --text-secondary: #94a3b8;
+  --accent-primary: #38bdf8;
+  --accent-secondary: #a78bfa;
   --blue-rgb: 237 245 255;
   --green-rgb: 125 161 35;
 }
 
+html,
 body {
   font-family: "Work Sans", sans-serif;
+  background-color: var(--surface-base);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+@keyframes aurora-drift-1 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(60px, 40px) scale(1.08); }
+  100% { transform: translate(-30px, 60px) scale(0.95); }
+}
+
+@keyframes aurora-drift-2 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-50px, -40px) scale(1.05); }
+  100% { transform: translate(40px, -20px) scale(0.92); }
+}
+
+@keyframes aurora-drift-3 {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(40px, -50px) scale(1.1); }
+  100% { transform: translate(-40px, 30px) scale(1); }
+}
+
+.aurora-drift-1 {
+  animation: aurora-drift-1 65s ease-in-out infinite alternate;
+}
+
+.aurora-drift-2 {
+  animation: aurora-drift-2 75s ease-in-out infinite alternate;
+}
+
+.aurora-drift-3 {
+  animation: aurora-drift-3 85s ease-in-out infinite alternate;
 }
 
 body:has(.card[data-color="blue"]:hover) {

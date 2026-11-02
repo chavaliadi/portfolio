@@ -7,6 +7,8 @@ import HomeInfo from "./HomeInfo";
 import WeatherSystem from "./WeatherSystem";
 import RainParticles from "./RainParticles";
 import CursorTrail from "./CursorTrail";
+import Card from "./Card";
+import AuroraBackground from "./AuroraBackground";
 
 export {
     CTA,
@@ -17,5 +19,7 @@ export {
     HomeInfo,
     WeatherSystem,
     RainParticles,
-    CursorTrail
+    CursorTrail,
+    Card,
+    AuroraBackground
 }
