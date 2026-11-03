@@ -145,6 +145,7 @@ const SceneContent = ({
 
 const Home = () => {
   const [currentStage, setCurrentStage] = useState(1);
+  const [scrollState, setScrollState] = useState("top"); // "top" | "mid" | "bottom"
   const [isRotating, setIsRotating] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
   const [sceneTimedOut, setSceneTimedOut] = useState(false);
@@ -172,21 +173,22 @@ const Home = () => {
     };
   }, []);
 
-  // Update scroll cue opacity directly via ref (0 React renders during scroll)
-  // Under prefers-reduced-motion, switch stage directly from scroll progress
+  // Update scroll cue state and reduced motion stage from scroll progress
   const handleScrollProgress = useCallback(
     (progress) => {
-      if (scrollCueRef.current) {
-        scrollCueRef.current.style.opacity = progress > 0.05 ? "0" : "1";
-        scrollCueRef.current.style.pointerEvents = progress > 0.05 ? "none" : "auto";
-      }
+      let state = "mid";
+      if (progress < 0.02) state = "top";
+      else if (progress > 0.98) state = "bottom";
+
+      setScrollState((prev) => (prev !== state ? state : prev));
 
       if (prefersReducedMotion) {
         let stage = 1;
-        if (progress < 0.25) stage = 1;
-        else if (progress < 0.55) stage = 2;
-        else if (progress < 0.85) stage = 3;
-        else stage = 4;
+        if (progress < 0.16) stage = 1;
+        else if (progress < 0.43) stage = 2;
+        else if (progress < 0.68) stage = 3;
+        else if (progress < 0.91) stage = 4;
+        else stage = 1;
 
         setCurrentStage((prev) => (prev !== stage ? stage : prev));
       }
@@ -282,6 +284,8 @@ const Home = () => {
     4: "bg-gradient-to-b from-[#3b0764] via-[#1e1b4b] to-[#22c55e]", // Night Aurora
   };
 
+  const isRightSide = currentStage === 2 || currentStage === 4;
+
   if (!webglAvailable || sceneTimedOut) {
     return (
       <section className={`w-full min-h-screen ${backgroundStyles[currentStage] || backgroundStyles[1]}`}>
@@ -291,45 +295,74 @@ const Home = () => {
   }
 
   return (
-    <section ref={sectionRef} className='w-full h-[400vh] relative'>
+    <section ref={sectionRef} className='w-full h-[500vh] relative'>
       {/* Sticky viewport pinning island, scene, popups, and scroll cue */}
       <div
         className={`sticky top-0 w-full h-screen overflow-hidden transition-all duration-1000 ${
           backgroundStyles[currentStage] || backgroundStyles[1]
         }`}
       >
-        {/* Soft ambient scrim in top-left to guarantee text contrast against bright sky without a visible box */}
+        {/* Soft ambient scrims to guarantee text contrast against bright sky without a visible shape */}
         <div
-          className='absolute inset-0 pointer-events-none z-[5] bg-[radial-gradient(ellipse_at_top_left,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.22)_35%,transparent_65%)]'
+          className={`absolute inset-0 pointer-events-none z-[5] transition-opacity duration-700 ease-in-out bg-[radial-gradient(ellipse_at_top_left,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.22)_35%,transparent_65%)] ${
+            !isRightSide ? "opacity-100" : "opacity-0"
+          }`}
+          aria-hidden='true'
+        />
+        <div
+          className={`absolute inset-0 pointer-events-none z-[5] transition-opacity duration-700 ease-in-out bg-[radial-gradient(ellipse_at_top_right,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.22)_35%,transparent_65%)] ${
+            isRightSide ? "opacity-100" : "opacity-0"
+          }`}
           aria-hidden='true'
         />
 
-        {/* Pinned HomeInfo text directly on sky with smooth cross-fade */}
-        <div className='absolute z-10 pointer-events-none top-28 sm:top-32 left-0 right-0 px-6 flex justify-center md:top-36 md:left-20 md:right-auto md:px-0 md:justify-start'>
-          <div className='pointer-events-auto w-full max-w-[540px]'>
-            <HomeInfo currentStage={currentStage} />
-          </div>
+        {/* Pinned HomeInfo text directly on sky with alternating left/right layout on desktop */}
+        <div className='absolute z-10 pointer-events-none top-28 sm:top-32 left-0 right-0 px-4 sm:px-6 md:top-36 md:px-20'>
+          <HomeInfo currentStage={currentStage} />
         </div>
 
-        {/* Scroll cue with down arrow, fades out past ~5% scroll */}
+        {/* Scroll indicator with direction state, readable across all skies */}
         <div
           ref={scrollCueRef}
-          className='absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 text-text-primary/70 transition-opacity duration-300 pointer-events-none select-none'
+          className='absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 text-white pointer-events-none select-none transition-all duration-300'
+          aria-hidden='true'
         >
-          <span className='text-xs font-mono uppercase tracking-widest text-slate-700 font-semibold drop-shadow-sm'>
-            Scroll
+          {/* Up chevron (visible in middle and bottom states) */}
+          {(scrollState === "mid" || scrollState === "bottom") && (
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 24 24'
+              strokeWidth='2.5'
+              stroke='currentColor'
+              className={`w-3.5 h-3.5 text-white sky-text-shadow ${
+                prefersReducedMotion ? "" : "animate-bob-up"
+              }`}
+            >
+              <path strokeLinecap='round' strokeLinejoin='round' d='M4.5 15.75l7.5-7.5 7.5 7.5' />
+            </svg>
+          )}
+
+          {/* Label */}
+          <span className='text-xs font-mono uppercase tracking-widest text-white font-semibold sky-text-shadow leading-none'>
+            {scrollState === "bottom" ? "BACK TO TOP" : "SCROLL"}
           </span>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            fill='none'
-            viewBox='0 0 24 24'
-            strokeWidth='2.5'
-            stroke='currentColor'
-            className='w-4 h-4 text-slate-700 animate-bounce drop-shadow-sm'
-            aria-hidden='true'
-          >
-            <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' />
-          </svg>
+
+          {/* Down chevron (visible in top and middle states) */}
+          {(scrollState === "top" || scrollState === "mid") && (
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              fill='none'
+              viewBox='0 0 24 24'
+              strokeWidth='2.5'
+              stroke='currentColor'
+              className={`w-3.5 h-3.5 text-white sky-text-shadow ${
+                prefersReducedMotion ? "" : "animate-bob-down"
+              }`}
+            >
+              <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' />
+            </svg>
+          )}
         </div>
 
         {/* 3D Scene Canvas */}

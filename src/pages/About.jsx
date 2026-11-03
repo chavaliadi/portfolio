@@ -107,7 +107,7 @@ const About = () => {
           US citizen based in Atlanta, Georgia, finishing a B.Tech at IIIT Allahabad (graduating 2027).
           I specialize in building robust full-stack applications, designing secure APIs, 
           and implementing machine learning pipelines. Genuinely curious about complex system 
-          architectures and automation.
+          architectures and automation. At Velind I owned no feature modules by choice — just the permission layer, the migration chain, and every review across a five-person team.
         </p>
 
         {/* 5d. Resume CTA button */}

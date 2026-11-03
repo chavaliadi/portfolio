@@ -18,10 +18,10 @@ import * as THREE from "three";
 import islandScene from "../assets/3d/island.glb";
 
 const START_ROTATION = 4.50; // morning (t = 0)
-const END_ROTATION = -0.63;  // night (t = 1)
+const END_ROTATION = 4.50 - 2 * Math.PI; // morning return (t = 1, -1.7831853...)
 
 // Canonical stage centres along the monotonically decreasing rotation sweep:
-// 4.50 (Morning, t≈0) -> 2.50 (Afternoon, t≈0.39) -> 1.075 (Evening, t≈0.67) -> 5.653 (Night, t≈1.0, 2π - 0.63)
+// 4.50 (Morning, t=0) -> 2.50 (Afternoon, t≈0.318) -> 1.075 (Evening, t≈0.545) -> 5.653 (Night, t≈0.816) -> 4.50 (Morning return, t=1.0)
 const STAGE_CENTERS = [
   { stage: 1, center: 4.50 },
   { stage: 2, center: 2.50 },
