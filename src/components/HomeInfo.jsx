@@ -1,10 +1,10 @@
 import { Link } from "react-router-dom";
-
 import { arrow } from "../assets/icons";
 
-const HomeInfo = ({ currentStage }) => {
-  if (currentStage === 1)
-    return (
+const STAGES = [
+  {
+    stage: 1,
+    content: (
       <h1 className='sm:text-xl sm:leading-snug text-center neo-brutalism-blue py-4 px-8 text-white mx-5'>
         Hi, I'm
         <span className='font-semibold mx-2 text-white'>Adithya Chavali</span>
@@ -12,10 +12,11 @@ const HomeInfo = ({ currentStage }) => {
         <br />
         US citizen based in Atlanta, Georgia, finishing a B.Tech at IIIT Allahabad (graduating 2027).
       </h1>
-    );
-
-  if (currentStage === 2) {
-    return (
+    ),
+  },
+  {
+    stage: 2,
+    content: (
       <div className='info-box'>
         <p className='font-medium sm:text-xl text-center'>
           Gained hands-on experience in full-stack and ML systems <br /> and built solid engineering skills
@@ -26,11 +27,11 @@ const HomeInfo = ({ currentStage }) => {
           <img src={arrow} alt='arrow' className='w-4 h-4 object-contain' />
         </Link>
       </div>
-    );
-  }
-
-  if (currentStage === 3) {
-    return (
+    ),
+  },
+  {
+    stage: 3,
+    content: (
       <div className='info-box'>
         <p className='font-medium text-center sm:text-xl'>
           Developed tools for code quality, biometric tracking, <br /> and recommendation engines. Curious about my work?
@@ -41,25 +42,46 @@ const HomeInfo = ({ currentStage }) => {
           <img src={arrow} alt='arrow' className='w-4 h-4 object-contain' />
         </Link>
       </div>
-    );
-  }
-
-  if (currentStage === 4) {
-    return (
+    ),
+  },
+  {
+    stage: 4,
+    content: (
       <div className='info-box'>
-      <p className='font-medium sm:text-xl text-center'>
-        Looking for a software engineering intern or full-time dev? <br/> Let's build something great together!
-      </p>
+        <p className='font-medium sm:text-xl text-center'>
+          Looking for a software engineering intern or full-time dev? <br /> Let's build something great together!
+        </p>
 
-      <Link to='/contact' className='neo-brutalism-white neo-btn'>
-        Let's connect
-        <img src={arrow} alt='arrow' className='w-4 h-4 object-contain' />
-      </Link>
+        <Link to='/contact' className='neo-brutalism-white neo-btn'>
+          Let's connect
+          <img src={arrow} alt='arrow' className='w-4 h-4 object-contain' />
+        </Link>
+      </div>
+    ),
+  },
+];
+
+const HomeInfo = ({ currentStage }) => {
+  return (
+    <div className='relative grid place-items-center w-full max-w-xl mx-auto px-4'>
+      {STAGES.map(({ stage, content }) => {
+        const isActive = currentStage === stage;
+        return (
+          <div
+            key={stage}
+            className={`col-start-1 row-start-1 transition-all duration-500 ease-in-out ${
+              isActive
+                ? "opacity-100 scale-100 pointer-events-auto"
+                : "opacity-0 scale-95 pointer-events-none"
+            }`}
+            aria-hidden={!isActive}
+          >
+            {content}
+          </div>
+        );
+      })}
     </div>
-    );
-  }
-
-  return null;
+  );
 };
 
 export default HomeInfo;

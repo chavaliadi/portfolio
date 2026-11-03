@@ -66,9 +66,13 @@ export function Bird({
 
   useEffect(() => {
     if (actions["Take 001"]) {
-      actions["Take 001"].play();
+      if (prefersReducedMotion) {
+        actions["Take 001"].stop();
+      } else {
+        actions["Take 001"].play();
+      }
     }
-  }, [actions]);
+  }, [actions, prefersReducedMotion]);
 
   useFrame(({ clock }) => {
     if (prefersReducedMotion) {

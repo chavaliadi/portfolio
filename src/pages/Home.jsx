@@ -1,9 +1,10 @@
 import { Canvas } from "@react-three/fiber";
-import React, { Suspense, useEffect, useMemo, useState } from "react";
+import React, { Suspense, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { HomeInfo, Loader, WeatherSystem, RainParticles, CursorTrail } from "../components";
 import { Bird, Island, Plane, Sky } from "../models";
 import useReducedMotion from "../hooks/useReducedMotion";
+import useScrollProgress from "../hooks/useScrollProgress";
 
 const hasWebGLSupport = () => {
   if (typeof document === "undefined") {
@@ -74,6 +75,7 @@ const SceneContent = ({
   biplaneScale,
   setIsRotating,
   setCurrentStage,
+  scrollProgressRef,
   onReady,
 }) => {
   useEffect(() => {
@@ -125,8 +127,9 @@ const SceneContent = ({
         isRotating={isRotating}
         setIsRotating={setIsRotating}
         setCurrentStage={setCurrentStage}
+        scrollProgressRef={scrollProgressRef}
         position={islandPosition}
-        rotation={[0.1, 4.7077, 0]}
+        rotation={[0.1, 4.5, 0]}
         scale={islandScale}
         prefersReducedMotion={prefersReducedMotion}
       />
@@ -142,16 +145,56 @@ const SceneContent = ({
 
 const Home = () => {
   const [currentStage, setCurrentStage] = useState(1);
-  const [activePopupStage, setActivePopupStage] = useState(1);
   const [isRotating, setIsRotating] = useState(false);
   const [sceneReady, setSceneReady] = useState(false);
   const [sceneTimedOut, setSceneTimedOut] = useState(false);
   const [webglAvailable] = useState(hasWebGLSupport);
+  const [isTabVisible, setIsTabVisible] = useState(
+    typeof document !== "undefined" ? !document.hidden : true
+  );
   const [viewport, setViewport] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
+    width: typeof window !== "undefined" ? window.innerWidth : 1200,
+    height: typeof window !== "undefined" ? window.innerHeight : 800,
   });
+
   const prefersReducedMotion = useReducedMotion();
+  const sectionRef = useRef(null);
+  const scrollCueRef = useRef(null);
+
+  // Pause the render loop when the tab is hidden
+  useEffect(() => {
+    const handleVisibility = () => {
+      setIsTabVisible(!document.hidden);
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+    };
+  }, []);
+
+  // Update scroll cue opacity directly via ref (0 React renders during scroll)
+  // Under prefers-reduced-motion, switch stage directly from scroll progress
+  const handleScrollProgress = useCallback(
+    (progress) => {
+      if (scrollCueRef.current) {
+        scrollCueRef.current.style.opacity = progress > 0.05 ? "0" : "1";
+        scrollCueRef.current.style.pointerEvents = progress > 0.05 ? "none" : "auto";
+      }
+
+      if (prefersReducedMotion) {
+        let stage = 1;
+        if (progress < 0.25) stage = 1;
+        else if (progress < 0.55) stage = 2;
+        else if (progress < 0.85) stage = 3;
+        else stage = 4;
+
+        setCurrentStage((prev) => (prev !== stage ? stage : prev));
+      }
+    },
+    [prefersReducedMotion]
+  );
+
+  const scrollProgressRef = useScrollProgress(sectionRef, handleScrollProgress);
 
   useEffect(() => {
     if (sceneReady || !webglAvailable) {
@@ -189,7 +232,6 @@ const Home = () => {
   const adjustBiplaneForScreenSize = (viewportWidth) => {
     let screenScale, screenPosition;
 
-    // If screen width is less than 768px, adjust the scale and position
     if (viewportWidth < 768) {
       screenScale = [1.5, 1.5, 1.5];
       screenPosition = [0, -1.5, 0];
@@ -230,14 +272,14 @@ const Home = () => {
       far: 1000,
       fov: 75,
     };
-  }, [viewport.height, viewport.width]);
+  }, []);
 
   // Backdrop gradients matched to chronological day stages
   const backgroundStyles = {
     1: "bg-gradient-to-b from-[#e0f2fe] via-[#bae6fd] to-[#ffffff]", // Morning
     2: "bg-gradient-to-b from-[#fde047] via-[#fed7aa] to-[#ffedd5]", // Afternoon Golden
     3: "bg-gradient-to-b from-[#4c1d95] via-[#db2777] to-[#f97316]", // Evening Sunset
-    4: "bg-gradient-to-b from-[#3b0764] via-[#1e1b4b] to-[#22c55e]"  // Night Aurora
+    4: "bg-gradient-to-b from-[#3b0764] via-[#1e1b4b] to-[#22c55e]", // Night Aurora
   };
 
   if (!webglAvailable || sceneTimedOut) {
@@ -249,39 +291,73 @@ const Home = () => {
   }
 
   return (
-    <section className={`w-full h-screen relative transition-all duration-1000 ${backgroundStyles[currentStage] || backgroundStyles[1]}`}>
-      <div className='absolute top-28 left-0 right-0 z-10 flex items-center justify-center'>
-        {activePopupStage && <HomeInfo currentStage={activePopupStage} />}
-      </div>
+    <section ref={sectionRef} className='w-full h-[400vh] relative'>
+      {/* Sticky viewport pinning island, scene, popups, and scroll cue */}
+      <div
+        className={`sticky top-0 w-full h-screen overflow-hidden transition-all duration-1000 ${
+          backgroundStyles[currentStage] || backgroundStyles[1]
+        }`}
+      >
+        {/* Pinned HomeInfo popup with smooth cross-fade */}
+        <div className='absolute top-28 left-0 right-0 z-10 flex items-center justify-center pointer-events-none'>
+          <div className='pointer-events-auto'>
+            <HomeInfo currentStage={currentStage} />
+          </div>
+        </div>
 
-      <SceneErrorBoundary>
-        <Canvas
-          className={`w-full h-screen bg-transparent ${
-            isRotating ? "cursor-grabbing" : "cursor-grab"
-          }`}
-          camera={cameraConfig}
+        {/* Scroll cue with down arrow, fades out past ~5% scroll */}
+        <div
+          ref={scrollCueRef}
+          className='absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-1.5 text-text-primary/70 transition-opacity duration-300 pointer-events-none select-none'
         >
-          <Suspense fallback={<Loader />}>
-            <SceneContent
-              currentStage={currentStage}
-              isRotating={isRotating}
-              prefersReducedMotion={prefersReducedMotion}
-              islandPosition={islandPosition}
-              islandScale={islandScale}
-              biplanePosition={biplanePosition}
-              biplaneScale={biplaneScale}
-              setIsRotating={setIsRotating}
-              setCurrentStage={(stage) => {
-                setActivePopupStage(stage);
-                if (stage !== null) {
-                  setCurrentStage(stage);
-                }
-              }}
-              onReady={() => setSceneReady(true)}
-            />
-          </Suspense>
-        </Canvas>
-      </SceneErrorBoundary>
+          <span className='text-xs font-mono uppercase tracking-widest text-slate-700 font-semibold drop-shadow-sm'>
+            Scroll
+          </span>
+          <svg
+            xmlns='http://www.w3.org/2000/svg'
+            fill='none'
+            viewBox='0 0 24 24'
+            strokeWidth='2.5'
+            stroke='currentColor'
+            className='w-4 h-4 text-slate-700 animate-bounce drop-shadow-sm'
+            aria-hidden='true'
+          >
+            <path strokeLinecap='round' strokeLinejoin='round' d='M19.5 8.25l-7.5 7.5-7.5-7.5' />
+          </svg>
+        </div>
+
+        {/* 3D Scene Canvas */}
+        <SceneErrorBoundary>
+          <Canvas
+            className={`w-full h-screen bg-transparent touch-pan-y ${
+              isRotating ? "cursor-grabbing" : "cursor-grab"
+            }`}
+            camera={cameraConfig}
+            dpr={viewport.width < 768 ? [1, 1.5] : [1, 2]}
+            frameloop={isTabVisible ? "always" : "never"}
+          >
+            <Suspense fallback={<Loader />}>
+              <SceneContent
+                currentStage={currentStage}
+                isRotating={isRotating}
+                prefersReducedMotion={prefersReducedMotion}
+                islandPosition={islandPosition}
+                islandScale={islandScale}
+                biplanePosition={biplanePosition}
+                biplaneScale={biplaneScale}
+                setIsRotating={setIsRotating}
+                setCurrentStage={(stage) => {
+                  if (stage !== null) {
+                    setCurrentStage(stage);
+                  }
+                }}
+                scrollProgressRef={scrollProgressRef}
+                onReady={() => setSceneReady(true)}
+              />
+            </Suspense>
+          </Canvas>
+        </SceneErrorBoundary>
+      </div>
     </section>
   );
 };

@@ -17,244 +17,165 @@ import * as THREE from "three";
 
 import islandScene from "../assets/3d/island.glb";
 
+const START_ROTATION = 4.50; // morning (t = 0)
+const END_ROTATION = -0.63;  // night (t = 1)
+
+// Canonical stage centres along the monotonically decreasing rotation sweep:
+// 4.50 (Morning, t≈0) -> 2.50 (Afternoon, t≈0.39) -> 1.075 (Evening, t≈0.67) -> 5.653 (Night, t≈1.0, 2π - 0.63)
+const STAGE_CENTERS = [
+  { stage: 1, center: 4.50 },
+  { stage: 2, center: 2.50 },
+  { stage: 3, center: 1.075 },
+  { stage: 4, center: 5.653 },
+];
+
+const getNearestStage = (rotationY) => {
+  const normalized = ((rotationY % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
+  let nearest = 1;
+  let minDistance = Infinity;
+
+  for (let i = 0; i < STAGE_CENTERS.length; i++) {
+    const { stage, center } = STAGE_CENTERS[i];
+    const diff = Math.abs(normalized - center);
+    const circularDist = Math.min(diff, 2 * Math.PI - diff);
+    if (circularDist < minDistance) {
+      minDistance = circularDist;
+      nearest = stage;
+    }
+  }
+  return nearest;
+};
+
 export function Island({
   isRotating,
   setIsRotating,
   setCurrentStage,
-  currentFocusPoint,
+  scrollProgressRef,
   prefersReducedMotion = false,
   ...props
 }) {
   const islandRef = useRef();
-  // Get access to the Three.js renderer and viewport
   const { gl, viewport } = useThree();
   const { nodes, materials } = useGLTF(islandScene, "/draco/gltf/");
 
-  // Use a ref for the last mouse x and y positions
   const lastX = useRef(0);
   const lastY = useRef(0);
-  // Use refs for Y and X rotation speeds
-  const rotationSpeed = useRef(0);
-  const rotationSpeedY = useRef(0);
-  // Define a damping factor to control rotation damping
-  const dampingFactor = 0.95;
+  const isPointerDown = useRef(false);
+  const pointerTypeRef = useRef("mouse");
+  const activeStageRef = useRef(1);
 
-  // Handle pointer (mouse or touch) down event
+  // Handle pointer down (mouse or touch)
   const handlePointerDown = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
+    if (event.button !== undefined && event.button !== 0) return;
+    isPointerDown.current = true;
+    pointerTypeRef.current = event.pointerType || (event.touches ? "touch" : "mouse");
     setIsRotating(true);
 
-    // Calculate the clientX and clientY based on whether it's a touch event or a mouse event
-    const clientX = event.touches ? event.touches[0].clientX : event.clientX;
-    const clientY = event.touches ? event.touches[0].clientY : event.clientY;
-
-    // Store the current clientX and clientY position for reference
+    const clientX = event.clientX ?? (event.touches ? event.touches[0].clientX : 0);
+    const clientY = event.clientY ?? (event.touches ? event.touches[0].clientY : 0);
     lastX.current = clientX;
     lastY.current = clientY;
   };
 
-  // Handle pointer (mouse or touch) up event
-  const handlePointerUp = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
+  const handlePointerUp = () => {
+    isPointerDown.current = false;
     setIsRotating(false);
   };
 
-  // Handle pointer (mouse or touch) move event
   const handlePointerMove = (event) => {
-    event.stopPropagation();
-    event.preventDefault();
-    if (isRotating) {
-      // If rotation is enabled, calculate the change in clientX and clientY position
-      const clientX = event.touches ? event.touches[0].clientX : event.clientX;
-      const clientY = event.touches ? event.touches[0].clientY : event.clientY;
+    if (!isPointerDown.current) return;
 
-      // calculate the change in the horizontal and vertical positions
-      const deltaX = (clientX - lastX.current) / viewport.width;
-      const deltaY = (clientY - lastY.current) / viewport.height;
+    const clientX = event.clientX ?? (event.touches ? event.touches[0].clientX : 0);
+    const clientY = event.clientY ?? (event.touches ? event.touches[0].clientY : 0);
 
-      // Update the island's rotation based on the mouse/touch movement
-      islandRef.current.rotation.y += deltaX * 0.01 * Math.PI;
-      
-      // Update pitch (X-axis rotation) with clamping to keep island upright
+    const deltaX = (clientX - lastX.current) / viewport.width;
+    const deltaY = (clientY - lastY.current) / viewport.height;
+
+    // Horizontal drag keeps rotating the island
+    islandRef.current.rotation.y += deltaX * 0.01 * Math.PI;
+
+    // Remove vertical drag-to-tilt on touch devices: keep vertical tilt on mouse drag only
+    if (pointerTypeRef.current === "mouse") {
       islandRef.current.rotation.x = THREE.MathUtils.clamp(
         islandRef.current.rotation.x + deltaY * 0.005 * Math.PI,
-        -0.1, // limit tilting forward (looking up at sky)
-        0.35  // limit tilting backward (looking down at island)
+        -0.1,
+        0.35
       );
-
-      // Update references for last positions
-      lastX.current = clientX;
-      lastY.current = clientY;
-
-      // Update Y and X rotation speeds
-      rotationSpeed.current = deltaX * 0.01 * Math.PI;
-      rotationSpeedY.current = deltaY * 0.005 * Math.PI;
     }
+
+    lastX.current = clientX;
+    lastY.current = clientY;
   };
 
-  // Handle keydown events
+  // Keep existing arrow-key controls
   const handleKeyDown = (event) => {
     if (event.key === "ArrowLeft") {
       if (!isRotating) setIsRotating(true);
-
-      islandRef.current.rotation.y += 0.005 * Math.PI;
-      rotationSpeed.current = 0.007;
+      islandRef.current.rotation.y += 0.015 * Math.PI;
     } else if (event.key === "ArrowRight") {
       if (!isRotating) setIsRotating(true);
-
-      islandRef.current.rotation.y -= 0.005 * Math.PI;
-      rotationSpeed.current = -0.007;
+      islandRef.current.rotation.y -= 0.015 * Math.PI;
     }
   };
 
-  // Handle keyup events
   const handleKeyUp = (event) => {
     if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
       setIsRotating(false);
     }
   };
 
-  // Touch events for mobile devices
-  const handleTouchStart = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setIsRotating(true);
-  
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    lastX.current = clientX;
-    lastY.current = clientY;
-  }
-  
-  const handleTouchEnd = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-    setIsRotating(false);
-  }
-  
-  const handleTouchMove = (e) => {
-    e.stopPropagation();
-    e.preventDefault();
-  
-    if (isRotating) {
-      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-      const deltaX = (clientX - lastX.current) / viewport.width;
-      const deltaY = (clientY - lastY.current) / viewport.height;
-  
-      islandRef.current.rotation.y += deltaX * 0.01 * Math.PI;
-      islandRef.current.rotation.x = THREE.MathUtils.clamp(
-        islandRef.current.rotation.x + deltaY * 0.005 * Math.PI,
-        -0.1,
-        0.35
-      );
-      
-      lastX.current = clientX;
-      lastY.current = clientY;
-      rotationSpeed.current = deltaX * 0.01 * Math.PI;
-      rotationSpeedY.current = deltaY * 0.005 * Math.PI;
-    }
-  }
-
   useEffect(() => {
-    if (prefersReducedMotion) {
-      rotationSpeed.current = 0;
-      rotationSpeedY.current = 0;
-    }
-  }, [prefersReducedMotion]);
-
-  useEffect(() => {
-    // Add event listeners for pointer and keyboard events
     const canvas = gl.domElement;
     canvas.addEventListener("pointerdown", handlePointerDown);
-    canvas.addEventListener("pointerup", handlePointerUp);
+    window.addEventListener("pointerup", handlePointerUp);
     canvas.addEventListener("pointermove", handlePointerMove);
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
-    canvas.addEventListener("touchstart", handleTouchStart);
-    canvas.addEventListener("touchend", handleTouchEnd);
-    canvas.addEventListener("touchmove", handleTouchMove);
 
-    // Remove event listeners when component unmounts
     return () => {
       canvas.removeEventListener("pointerdown", handlePointerDown);
-      canvas.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointerup", handlePointerUp);
       canvas.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
-      canvas.removeEventListener("touchstart", handleTouchStart);
-      canvas.removeEventListener("touchend", handleTouchEnd);
-      canvas.removeEventListener("touchmove", handleTouchMove);
     };
-  }, [gl, handlePointerDown, handlePointerUp, handlePointerMove]);
+  }, [gl, viewport]);
 
-  // This function is called on each frame update
+  // Frame update
   useFrame(() => {
-    // If not rotating, apply damping to slow down the rotation (smoothly)
+    if (!islandRef.current) return;
+
+    if (prefersReducedMotion) {
+      // Under reduced motion: hold one fixed rotation, no scroll-linked movement
+      islandRef.current.rotation.y = START_ROTATION;
+      islandRef.current.rotation.x = 0.1;
+      return;
+    }
+
+    const t = scrollProgressRef?.current ?? 0;
+    const targetY = START_ROTATION + t * (END_ROTATION - START_ROTATION);
+
     if (!isRotating) {
-      if (prefersReducedMotion) {
-        return;
-      }
-
-      // Apply damping factor to horizontal Y rotation
-      rotationSpeed.current *= dampingFactor;
-      if (Math.abs(rotationSpeed.current) < 0.001) {
-        rotationSpeed.current = 0;
-      }
-      islandRef.current.rotation.y += rotationSpeed.current;
-
-      // Apply damping factor to vertical X rotation
-      rotationSpeedY.current *= dampingFactor;
-      if (Math.abs(rotationSpeedY.current) < 0.001) {
-        rotationSpeedY.current = 0;
-      }
-      islandRef.current.rotation.x = THREE.MathUtils.clamp(
-        islandRef.current.rotation.x + rotationSpeedY.current,
-        -0.1,
-        0.35
+      // Ease rotation toward the scroll-derived target (lerp ~0.08 per frame)
+      islandRef.current.rotation.y = THREE.MathUtils.lerp(
+        islandRef.current.rotation.y,
+        targetY,
+        0.08
       );
-    } else {
-      // When rotating, determine the current stage based on island's orientation
-      const rotation = islandRef.current.rotation.y;
+      // Ease tilt back to upright position (0.1)
+      islandRef.current.rotation.x = THREE.MathUtils.lerp(
+        islandRef.current.rotation.x,
+        0.1,
+        0.08
+      );
+    }
 
-      /**
-       * Normalize the rotation value to ensure it stays within the range [0, 2 * Math.PI].
-       * The goal is to ensure that the rotation value remains within a specific range to
-       * prevent potential issues with very large or negative rotation values.
-       *  Here's a step-by-step explanation of what this code does:
-       *  1. rotation % (2 * Math.PI) calculates the remainder of the rotation value when divided
-       *     by 2 * Math.PI. This essentially wraps the rotation value around once it reaches a
-       *     full circle (360 degrees) so that it stays within the range of 0 to 2 * Math.PI.
-       *  2. (rotation % (2 * Math.PI)) + 2 * Math.PI adds 2 * Math.PI to the result from step 1.
-       *     This is done to ensure that the value remains positive and within the range of
-       *     0 to 2 * Math.PI even if it was negative after the modulo operation in step 1.
-       *  3. Finally, ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI) applies another
-       *     modulo operation to the value obtained in step 2. This step guarantees that the value
-       *     always stays within the range of 0 to 2 * Math.PI, which is equivalent to a full
-       *     circle in radians.
-       */
-      const normalizedRotation =
-        ((rotation % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-
-      // Set the current stage based on the island's orientation
-      switch (true) {
-        case normalizedRotation >= 5.45 && normalizedRotation <= 5.85:
-          setCurrentStage(4);
-          break;
-        case normalizedRotation >= 0.85 && normalizedRotation <= 1.3:
-          setCurrentStage(3);
-          break;
-        case normalizedRotation >= 2.4 && normalizedRotation <= 2.6:
-          setCurrentStage(2);
-          break;
-        case normalizedRotation >= 4.25 && normalizedRotation <= 4.75:
-          setCurrentStage(1);
-          break;
-        default:
-          setCurrentStage(null);
-      }
+    // Refactor stage detection out of isRotating branch so it runs every frame
+    const currentRotationY = islandRef.current.rotation.y;
+    const stage = getNearestStage(currentRotationY);
+    if (stage !== activeStageRef.current) {
+      activeStageRef.current = stage;
+      setCurrentStage(stage);
     }
   });
 

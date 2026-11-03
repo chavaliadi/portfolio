@@ -30,7 +30,7 @@ body {
   font-family: "Work Sans", sans-serif;
   background-color: var(--surface-base);
   color: var(--text-primary);
-  overflow-x: hidden;
+  overflow-x: clip;
   max-width: 100vw;
 }
 
