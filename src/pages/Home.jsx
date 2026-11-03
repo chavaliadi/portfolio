@@ -112,10 +112,10 @@ const SceneContent = ({
         prefersReducedMotion={prefersReducedMotion}
       />
       <Bird
-        scale={[0.026, 0.026, 0.026]}
+        scale={[0.020, 0.020, 0.020]}
         orbitRadius={38}
         orbitSpeed={0.22}
-        altitude={7}
+        altitude={13}
         direction={1}
         timeOffset={(4 * Math.PI) / 3}
         type="fire-dragon"
@@ -306,7 +306,7 @@ const Home = () => {
 
         {/* Pinned HomeInfo text directly on sky with smooth cross-fade */}
         <div className='absolute z-10 pointer-events-none top-28 sm:top-32 left-0 right-0 px-6 flex justify-center md:top-36 md:left-20 md:right-auto md:px-0 md:justify-start'>
-          <div className='pointer-events-auto w-full max-w-[480px]'>
+          <div className='pointer-events-auto w-full max-w-[540px]'>
             <HomeInfo currentStage={currentStage} />
           </div>
         </div>

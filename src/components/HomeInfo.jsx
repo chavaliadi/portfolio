@@ -11,7 +11,7 @@ const STAGES = [
           Hi, I'm <span className='text-accent-primary'>Adithya Chavali</span> 👋
         </h1>
         <p className='text-base sm:text-lg text-slate-100 font-medium leading-relaxed sky-text-shadow'>
-          US citizen based in Atlanta, Georgia, finishing a B.Tech at IIIT Allahabad (graduating 2027).
+          Software engineer. US citizen based in Atlanta, Georgia, finishing a B.Tech at IIIT Allahabad (2027).
         </p>
       </div>
     ),
@@ -20,9 +20,8 @@ const STAGES = [
     stage: 2,
     content: (
       <div className='flex flex-col gap-5 text-center md:text-left'>
-        <p className='text-2xl sm:text-3xl md:text-4xl font-bold font-poppins text-white tracking-tight leading-snug sky-text-shadow'>
-          Gained hands-on experience in full-stack and ML systems <br className='hidden sm:inline' />
-          and built solid engineering skills
+        <p className='text-xl sm:text-2xl md:text-3xl font-bold font-poppins text-white tracking-tight leading-snug sky-text-shadow'>
+          Two software internships. Built a biometric attendance platform handling 1,000+ concurrent sessions, then led integration on a government infrastructure portal for the Ministry of Ports.
         </p>
 
         <div className='flex justify-center md:justify-start'>
@@ -41,9 +40,8 @@ const STAGES = [
     stage: 3,
     content: (
       <div className='flex flex-col gap-5 text-center md:text-left'>
-        <p className='text-2xl sm:text-3xl md:text-4xl font-bold font-poppins text-white tracking-tight leading-snug sky-text-shadow'>
-          Developed tools for code quality, biometric tracking, <br className='hidden sm:inline' />
-          and recommendation engines. Curious about my work?
+        <p className='text-xl sm:text-2xl md:text-3xl font-bold font-poppins text-white tracking-tight leading-snug sky-text-shadow'>
+          Ten projects: geospatial ML, HNSW vector search built from scratch, Go service monitoring, LLM evaluation infrastructure.
         </p>
 
         <div className='flex justify-center md:justify-start'>
@@ -63,8 +61,7 @@ const STAGES = [
     content: (
       <div className='flex flex-col gap-5 text-center md:text-left'>
         <p className='text-2xl sm:text-3xl md:text-4xl font-bold font-poppins text-white tracking-tight leading-snug sky-text-shadow'>
-          Looking for a software engineering intern or full-time dev? <br className='hidden sm:inline' />
-          Let's build something great together!
+          Looking for a software engineering intern or full-time dev? Let's build something great together!
         </p>
 
         <div className='flex justify-center md:justify-start'>
@@ -83,7 +80,7 @@ const STAGES = [
 
 const HomeInfo = ({ currentStage }) => {
   return (
-    <div className='relative w-full max-w-[480px]'>
+    <div className='relative w-full max-w-[540px]'>
       {STAGES.map(({ stage, content }) => {
         const isActive = currentStage === stage;
         return (
