@@ -93,8 +93,8 @@ const SceneContent = ({
 
       <Bird
         scale={[0.02, 0.02, 0.02]}
-        orbitRadius={24}
-        orbitSpeed={0.25}
+        orbitRadius={26}
+        orbitSpeed={0.22}
         altitude={6}
         direction={1}
         timeOffset={0}
@@ -104,20 +104,20 @@ const SceneContent = ({
       <Bird
         scale={[0.016, 0.016, 0.016]}
         orbitRadius={29}
-        orbitSpeed={0.35}
+        orbitSpeed={0.22}
         altitude={10}
-        direction={-1}
-        timeOffset={Math.PI}
+        direction={1}
+        timeOffset={(2 * Math.PI) / 3}
         type="ice-eagle"
         prefersReducedMotion={prefersReducedMotion}
       />
       <Bird
         scale={[0.026, 0.026, 0.026]}
-        orbitRadius={34}
-        orbitSpeed={0.18}
+        orbitRadius={32}
+        orbitSpeed={0.22}
         altitude={7}
         direction={1}
-        timeOffset={Math.PI / 2}
+        timeOffset={(4 * Math.PI) / 3}
         type="fire-dragon"
         prefersReducedMotion={prefersReducedMotion}
       />
@@ -299,8 +299,8 @@ const Home = () => {
         }`}
       >
         {/* Pinned HomeInfo popup with smooth cross-fade */}
-        <div className='absolute top-28 left-0 right-0 z-10 flex items-center justify-center pointer-events-none'>
-          <div className='pointer-events-auto'>
+        <div className='absolute z-10 pointer-events-none top-24 sm:top-28 left-0 right-0 px-4 flex justify-center md:top-1/2 md:-translate-y-1/2 md:left-12 lg:left-20 md:right-auto md:px-0 md:justify-start'>
+          <div className='pointer-events-auto w-full max-w-[420px]'>
             <HomeInfo currentStage={currentStage} />
           </div>
         </div>
