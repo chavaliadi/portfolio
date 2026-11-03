@@ -93,7 +93,7 @@ const SceneContent = ({
 
       <Bird
         scale={[0.02, 0.02, 0.02]}
-        orbitRadius={26}
+        orbitRadius={32}
         orbitSpeed={0.22}
         altitude={6}
         direction={1}
@@ -113,7 +113,7 @@ const SceneContent = ({
       />
       <Bird
         scale={[0.026, 0.026, 0.026]}
-        orbitRadius={32}
+        orbitRadius={38}
         orbitSpeed={0.22}
         altitude={7}
         direction={1}
@@ -298,9 +298,15 @@ const Home = () => {
           backgroundStyles[currentStage] || backgroundStyles[1]
         }`}
       >
-        {/* Pinned HomeInfo popup with smooth cross-fade */}
-        <div className='absolute z-10 pointer-events-none top-24 sm:top-28 left-0 right-0 px-4 flex justify-center md:top-1/2 md:-translate-y-1/2 md:left-12 lg:left-20 md:right-auto md:px-0 md:justify-start'>
-          <div className='pointer-events-auto w-full max-w-[420px]'>
+        {/* Soft ambient scrim in top-left to guarantee text contrast against bright sky without a visible box */}
+        <div
+          className='absolute inset-0 pointer-events-none z-[5] bg-[radial-gradient(ellipse_at_top_left,rgba(0,0,0,0.5)_0%,rgba(0,0,0,0.22)_35%,transparent_65%)]'
+          aria-hidden='true'
+        />
+
+        {/* Pinned HomeInfo text directly on sky with smooth cross-fade */}
+        <div className='absolute z-10 pointer-events-none top-28 sm:top-32 left-0 right-0 px-6 flex justify-center md:top-36 md:left-20 md:right-auto md:px-0 md:justify-start'>
+          <div className='pointer-events-auto w-full max-w-[480px]'>
             <HomeInfo currentStage={currentStage} />
           </div>
         </div>
