@@ -12,7 +12,7 @@ const STAGES = [
           Hi, I'm <span className='text-accent-primary'>Adithya Chavali</span> 👋
         </h1>
         <p className='text-base sm:text-lg text-slate-100 font-medium leading-relaxed sky-text-shadow'>
-          Software engineer building backend systems and ML pipelines. US citizen based in Atlanta, Georgia — graduating 2027.
+          Software engineer building backend systems and ML pipelines. US citizen based in Atlanta, Georgia; studying at IIIT Allahabad, graduating in 2027.
         </p>
       </div>
     ),
